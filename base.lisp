@@ -2,7 +2,8 @@
 
 (defpackage #:aoc-2020
   (:use #:cl)
-  (:export #:read-integers))
+  (:export #:read-integers
+           #:read-matrix))
 
 (in-package #:aoc-2020)
 
@@ -19,3 +20,14 @@
                                 :while i
                                 :collect i)))
           type))
+
+(defun read-matrix (lines)
+  (let* ((width (length (first lines)))
+         (height (length lines))
+         (array (make-array (list height width))))
+    (loop :for y :below height
+          :for line :in lines
+          :do (loop :for x :below width
+                    :for char :across line
+                    :do (setf (aref array y x) char)))
+    array))
