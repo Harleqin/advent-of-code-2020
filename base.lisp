@@ -7,21 +7,45 @@
 
 (in-package #:aoc-2020)
 
-(defun read-integers (filename &optional (type 'list))
-  (coerce (with-open-file (in filename)
-            (loop :for line := (read-line in nil)
-                  :while line
-                  :append (loop :for s := (substitute #\space #\, line)
-                                :for (i pos)
-                                  := (multiple-value-list
-                                      (parse-integer s
-                                                     :start (or pos 0)
-                                                     :junk-allowed t))
-                                :while i
-                                :collect i)))
+(defgeneric read-integers (source &optional type))
+
+(defmethod read-integers ((filename pathname) &optional (type 'list))
+  (with-open-file (in filename)
+    (read-integers in type)))
+
+(defmethod read-integers ((string string) &optional (type 'list))
+  (with-input-from-string (in string)
+    (read-integers in type)))
+
+(defmethod read-integers ((in stream) &optional (type 'list))
+  (coerce (loop :for line := (read-line in nil)
+                :while line
+                :append (loop :for s := (substitute #\space #\, line)
+                              :for (i pos)
+                                := (multiple-value-list
+                                    (parse-integer s
+                                                   :start (or pos 0)
+                                                   :junk-allowed t))
+                              :while i
+                              :collect i))
           type))
 
-(defun read-matrix (lines)
+(defgeneric read-matrix (source))
+
+(defmethod read-matrix ((pathname pathname))
+  (with-open-file (in pathname)
+    (read-matrix in)))
+
+(defmethod read-matrix ((string string))
+  (with-input-from-string (in string)
+    (read-matrix in)))
+
+(defmethod read-matrix ((in stream))
+  (read-matrix (loop :for line := (read-line in nil)
+                     :while line
+                     :collect line)))
+
+(defmethod read-matrix ((lines cons))
   (let* ((width (length (first lines)))
          (height (length lines))
          (array (make-array (list height width))))

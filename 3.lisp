@@ -8,12 +8,8 @@
 
 (in-package #:aoc-2020-3)
 
-(defun aoc-3a (&optional (input (read-file-into-string "3")))
-  (let* ((lines (with-input-from-string (in input)
-                  (loop :for line := (read-line in nil)
-                        :while line
-                        :collect line)))
-         (map (read-matrix lines)))
+(defun aoc-3a (&optional (input #p"3"))
+  (let ((map (read-matrix input)))
     (check-slope map 3 1)))
 
 (defun check-slope (map dx dy)
@@ -23,12 +19,8 @@
         :while (< y (array-dimension map 0))
         :count (char= (aref map y (mod x width)) #\#)))
 
-(defun aoc-3b (&optional (input (read-file-into-string "3")))
-  (let* ((lines (with-input-from-string (in input)
-                  (loop :for line := (read-line in nil)
-                        :while line
-                        :collect line)))
-         (map (read-matrix lines)))
+(defun aoc-3b (&optional (input #p"3"))
+  (let ((map (read-matrix input)))
     (reduce #'*
             (loop :for (x y) :in '((1 1)
                                    (3 1)
