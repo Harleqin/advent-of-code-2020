@@ -15,4 +15,6 @@
   (test "5a" (= (aoc-2020-5::aoc-5a) 996))
   (test "5b" (= (aoc-2020-5::aoc-5b) 671))
   (test "6a" (= (aoc-2020-6::aoc-6a) 6437))
-  (test "6b" (= (aoc-2020-6::aoc-6b) 3229)))
+  (test "6b" (= (aoc-2020-6::aoc-6b) 3229))
+  (test "7a" (= (aoc-2020-7::aoc-7a) 238))
+  (test "7b" (= (aoc-2020-7::aoc-7b) 82930)))
