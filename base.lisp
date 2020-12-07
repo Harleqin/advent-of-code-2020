@@ -1,8 +1,10 @@
 (in-package #:cl-user)
 
 (defpackage #:aoc-2020
-  (:use #:cl)
-  (:export #:read-integers
+  (:use #:cl #:arrows)
+  (:export #:lines
+           #:read-blocks
+           #:read-integers
            #:read-matrix))
 
 (in-package #:aoc-2020)
@@ -30,23 +32,26 @@
                               :collect i))
           type))
 
-(defgeneric read-matrix (source))
+(defgeneric lines (source))
 
-(defmethod read-matrix ((pathname pathname))
+(defmethod lines ((stream stream))
+  (loop :for line := (read-line stream nil)
+        :while line
+        :collect line))
+
+(defmethod lines ((pathname pathname))
   (with-open-file (in pathname)
-    (read-matrix in)))
+    (lines in)))
 
-(defmethod read-matrix ((string string))
+(defmethod lines ((string string))
   (with-input-from-string (in string)
-    (read-matrix in)))
+    (lines in)))
 
-(defmethod read-matrix ((in stream))
-  (read-matrix (loop :for line := (read-line in nil)
-                     :while line
-                     :collect line)))
-
-(defmethod read-matrix ((lines cons))
-  (let* ((width (length (first lines)))
+(defun read-matrix (source)
+  "Read a rectangular 2d matrix from source, which can be a pathname, a string,
+or a stream."
+  (let* ((lines (lines source))
+         (width (length (first lines)))
          (height (length lines))
          (array (make-array (list height width))))
     (loop :for y :below height
@@ -55,3 +60,9 @@
                     :for char :across line
                     :do (setf (aref array y x) char)))
     array))
+
+(defun read-blocks (source)
+  "Read a string that consists of lines that are split into groups by empty
+lines into a list of lists of strings."
+  (->> (lines source)
+       (split-sequence:split-sequence "")))
