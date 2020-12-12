@@ -2,7 +2,9 @@
 
 (defpackage #:aoc-2020
   (:use #:cl #:arrows)
-  (:export #:lines
+  (:export #:array-flat-view
+           #:lines
+           #:print-matrix
            #:read-blocks
            #:read-integers
            #:read-matrix))
@@ -61,8 +63,23 @@ or a stream."
                     :do (setf (aref array y x) char)))
     array))
 
+(defun print-matrix (matrix &optional lookup-alist)
+  (flet ((lookup (e)
+           (if lookup-alist
+               (cdr (assoc e lookup-alist))
+               e)))
+    (dotimes (y (array-dimension matrix 0))
+      (dotimes (x (array-dimension matrix 1))
+        (princ (lookup (aref matrix y x))))
+      (terpri))))
+
 (defun read-blocks (source)
   "Read a string that consists of lines that are split into groups by empty
 lines into a list of lists of strings."
   (->> (lines source)
        (split-sequence:split-sequence "")))
+
+(defun array-flat-view (array)
+  (make-array (array-total-size array)
+              :element-type (array-element-type array)
+              :displaced-to array))
