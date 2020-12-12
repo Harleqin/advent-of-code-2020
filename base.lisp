@@ -3,6 +3,7 @@
 (defpackage #:aoc-2020
   (:use #:cl #:arrows)
   (:export #:array-flat-view
+           #:intern-keyword
            #:lines
            #:print-matrix
            #:read-blocks
@@ -83,3 +84,6 @@ lines into a list of lists of strings."
   (make-array (array-total-size array)
               :element-type (array-element-type array)
               :displaced-to array))
+
+(defun intern-keyword (string)
+  (intern (string-upcase string) '#:keyword))
